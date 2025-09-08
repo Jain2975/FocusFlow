@@ -7,7 +7,7 @@ import { Play, Pause, Volume2, VolumeX, RotateCcw, Timer } from "lucide-react";
 
 const Meditation = ({ isGuestMode }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSound, setCurrentSound] = useState("forest");
+  const [currentSound, setCurrentSound] = useState("silence");
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
   const [sessionTime, setSessionTime] = useState(10); // minutes
@@ -16,6 +16,7 @@ const Meditation = ({ isGuestMode }) => {
   
   const breathingCircleRef = useRef(null);
   const intervalRef = useRef(null);
+  const audioRef = useRef(null);
 
   const sounds = [
     { id: "forest", name: "Forest Sounds", emoji: "🌲", description: "Birds chirping with gentle wind" },
@@ -25,6 +26,69 @@ const Meditation = ({ isGuestMode }) => {
   ];
 
   const durations = [5, 10, 15, 20, 30];
+
+  // Audio file paths
+  const soundFiles = {
+    forest: '/sounds/forest.mp3',
+    rain: '/sounds/rain.mp3',
+    ocean: '/sounds/ocean.mp3'
+  };
+
+  // Get background theme based on current sound
+  const getBackgroundTheme = () => {
+    switch (currentSound) {
+      case 'rain':
+        return {
+          gradient: 'from-blue-900/30 via-blue-800/20 to-indigo-900/30',
+          overlay: 'bg-blue-600/40'
+        };
+      case 'forest':
+        return {
+          gradient: 'from-green-900/30 via-green-800/20 to-emerald-900/30',
+          overlay: 'bg-green-600/40'
+        };
+      case 'ocean':
+        return {
+          gradient: 'from-cyan-900/30 via-blue-800/20 to-teal-900/30',
+          overlay: 'bg-cyan-600/40'
+        };
+      default: // silence
+        return {
+          gradient: 'from-meditation/30 via-purple-900/20 to-indigo-900/30',
+          overlay: 'bg-gradient-meditation/60'
+        };
+    }
+  };
+
+  // Sound management with HTML5 audio
+  useEffect(() => {
+    if (isPlaying && currentSound !== 'silence') {
+      const audio = new Audio(soundFiles[currentSound]);
+      audio.loop = true;
+      audio.volume = isMuted ? 0 : volume;
+      
+      audio.play().catch(error => {
+        console.log('Audio play failed:', error);
+      });
+      
+      audioRef.current = audio;
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, [isPlaying, currentSound]);
+
+  // Update volume when volume or mute changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume;
+    }
+  }, [volume, isMuted]);
 
   // Breathing animation effect
   useEffect(() => {
@@ -118,11 +182,24 @@ const Meditation = ({ isGuestMode }) => {
     }
   };
 
+  const handleSoundChange = (soundId) => {
+    // Stop current audio if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    
+    setCurrentSound(soundId);
+  };
+
+  const backgroundTheme = getBackgroundTheme();
+
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-meditation/30 via-purple-900/20 to-indigo-900/30" />
-      <div className="absolute inset-0 bg-gradient-meditation/60 backdrop-blur-sm" />
+      {/* Dynamic Background */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${backgroundTheme.gradient}`} />
+      <div className={`absolute inset-0 ${backgroundTheme.overlay} backdrop-blur-sm`} />
 
       <div className="relative z-10 pt-24 pb-12 px-6">
         <div className="container mx-auto max-w-6xl">
@@ -261,7 +338,7 @@ const Meditation = ({ isGuestMode }) => {
                   {sounds.map((sound) => (
                     <button
                       key={sound.id}
-                      onClick={() => setCurrentSound(sound.id)}
+                      onClick={() => handleSoundChange(sound.id)}
                       className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
                         currentSound === sound.id
                           ? 'bg-white/20 border-2 border-white/30'
