@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* FocusFlow Design System - Soothing and calming colors inspired by nature
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Core colors - soft, natural palette */
+    --background: 180 20% 98%;
+    --foreground: 160 15% 25%;
+
+    --card: 180 25% 96%;
+    --card-foreground: 160 15% 25%;
+
+    --popover: 180 25% 96%;
+    --popover-foreground: 160 15% 25%;
+
+    /* Primary - calming sage green */
+    --primary: 140 40% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 140 35% 75%;
+    --primary-dark: 140 45% 35%;
+
+    /* Secondary - soft sky blue */
+    --secondary: 200 35% 85%;
+    --secondary-foreground: 160 15% 25%;
+
+    /* Muted tones */
+    --muted: 180 15% 92%;
+    --muted-foreground: 160 10% 55%;
+
+    /* Accent - warm earth tone */
+    --accent: 25 45% 75%;
+    --accent-foreground: 160 15% 25%;
+
+    /* Meditation colors */
+    --meditation: 260 35% 65%;
+    --meditation-foreground: 0 0% 100%;
+
+    /* Focus/timer colors */
+    --focus: 15 70% 65%;
+    --focus-foreground: 0 0% 100%;
+
+    /* System colors */
+    --destructive: 0 65% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 180 15% 88%;
+    --input: 180 15% 90%;
+    --ring: 140 40% 55%;
+
+    --radius: 1rem;
+
+    /* Gradients for zen aesthetics */
+    --gradient-zen: linear-gradient(135deg, hsl(140 40% 55%), hsl(200 35% 65%));
+    --gradient-calm: linear-gradient(180deg, hsl(180 25% 96%), hsl(200 30% 92%));
+    --gradient-focus: linear-gradient(135deg, hsl(15 70% 65%), hsl(25 65% 70%));
+    --gradient-meditation: linear-gradient(135deg, hsl(260 35% 65%), hsl(280 30% 75%));
+    
+    /* Shadows for depth */
+    --shadow-soft: 0 4px 20px -4px hsl(140 40% 55% / 0.15);
+    --shadow-focus: 0 8px 25px -5px hsl(15 70% 65% / 0.2);
+    --shadow-meditation: 0 6px 20px -3px hsl(260 35% 65% / 0.18);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-gentle: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark mode - deep, calming night colors */
+    --background: 200 25% 8%;
+    --foreground: 180 15% 85%;
+
+    --card: 200 20% 12%;
+    --card-foreground: 180 15% 85%;
+
+    --popover: 200 20% 12%;
+    --popover-foreground: 180 15% 85%;
+
+    --primary: 140 35% 65%;
+    --primary-foreground: 200 25% 8%;
+    --primary-light: 140 30% 75%;
+    --primary-dark: 140 40% 45%;
+
+    --secondary: 200 20% 20%;
+    --secondary-foreground: 180 15% 85%;
+
+    --muted: 200 15% 18%;
+    --muted-foreground: 180 10% 65%;
+
+    --accent: 25 35% 55%;
+    --accent-foreground: 180 15% 85%;
+
+    --meditation: 260 25% 55%;
+    --meditation-foreground: 180 15% 85%;
+
+    --focus: 15 60% 55%;
+    --focus-foreground: 180 15% 85%;
+
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 180 15% 85%;
+
+    --border: 200 15% 25%;
+    --input: 200 15% 20%;
+    --ring: 140 35% 65%;
+
+    /* Dark mode gradients */
+    --gradient-zen: linear-gradient(135deg, hsl(140 35% 65%), hsl(200 25% 45%));
+    --gradient-calm: linear-gradient(180deg, hsl(200 20% 12%), hsl(200 15% 18%));
+    --gradient-focus: linear-gradient(135deg, hsl(15 60% 55%), hsl(25 55% 60%));
+    --gradient-meditation: linear-gradient(135deg, hsl(260 25% 55%), hsl(280 20% 65%));
+    
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    --shadow-focus: 0 8px 25px -5px hsl(15 60% 55% / 0.25);
+    --shadow-meditation: 0 6px 20px -3px hsl(260 25% 55% / 0.2);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
