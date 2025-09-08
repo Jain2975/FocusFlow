@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Clock, BookOpen, Brain, CheckSquare, User, Settings, BarChart3 } from "lucide-react";
 
-const Navigation = ({ activeSection, onSectionChange, isGuestMode }) => {
+const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignIn, onSignUp, onSignOut }) => {
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: CheckSquare, variant: "calm" },
     { id: "pomodoro", label: "Focus Timer", icon: Clock, variant: "focus" },
@@ -62,10 +62,24 @@ const Navigation = ({ activeSection, onSectionChange, isGuestMode }) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            {isGuestMode && (
-              <Button variant="zen" size="sm">
-                Sign In
-              </Button>
+            {isGuestMode ? (
+              <>
+                <Button variant="ghost" size="sm" onClick={onSignIn}>
+                  Sign In
+                </Button>
+                <Button variant="zen" size="sm" onClick={onSignUp}>
+                  Sign Up
+                </Button>
+              </>
+            ) : (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  Welcome, {user?.name || user?.email}
+                </span>
+                <Button variant="ghost" size="sm" onClick={onSignOut}>
+                  Sign Out
+                </Button>
+              </>
             )}
             <Button variant="ghost" size="icon">
               {isGuestMode ? <User className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
