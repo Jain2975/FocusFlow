@@ -23,6 +23,8 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        focus: "hsl(var(--focus))",
+        meditation: "hsl(var(--meditation))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -61,6 +63,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        'gradient-zen': 'var(--gradient-zen)',
+        'gradient-calm': 'var(--gradient-calm)',
+        'gradient-focus': 'var(--gradient-focus)',
+        'gradient-meditation': 'var(--gradient-meditation)',
       },
       borderRadius: {
         lg: "var(--radius)",

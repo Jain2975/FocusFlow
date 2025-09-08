@@ -109,7 +109,7 @@ const PomodoroTimer = ({ isGuestMode }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-calm pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-background pt-24 pb-12 px-6">
       <div className="container mx-auto max-w-4xl">
         <motion.div
           className="text-center mb-8"

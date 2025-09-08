@@ -46,7 +46,7 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-calm relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-primary/20 via-transparent to-meditation/20" />
 

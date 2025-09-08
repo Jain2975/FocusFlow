@@ -8,82 +8,75 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Core colors - soft, natural palette */
-    --background: 180 20% 98%;
-    --foreground: 160 15% 25%;
+    /* Core colors - clean, modern light theme */
+    --background: 220 14% 96%;
+    --foreground: 222 84% 5%;
 
-    --card: 180 25% 96%;
-    --card-foreground: 160 15% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
 
-    --popover: 180 25% 96%;
-    --popover-foreground: 160 15% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
 
-    /* Primary - calming sage green */
-    --primary: 140 40% 55%;
+    /* Primary - fresh green accent */
+    --primary: 142 76% 36%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 140 35% 75%;
-    --primary-dark: 140 45% 35%;
+    --primary-light: 142 60% 50%;
+    --primary-dark: 142 85% 25%;
 
-    /* Secondary - soft sky blue */
-    --secondary: 200 35% 85%;
-    --secondary-foreground: 160 15% 25%;
+    /* Secondary - light neutral */
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 0 0% 9%;
 
     /* Muted tones */
-    --muted: 180 15% 92%;
-    --muted-foreground: 160 10% 55%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent - warm earth tone */
-    --accent: 25 45% 75%;
-    --accent-foreground: 160 15% 25%;
+    /* Accent colors for different features */
+    --accent: 24 70% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Meditation colors */
-    --meditation: 260 35% 65%;
+    /* Meditation colors - soft purple */
+    --meditation: 262 52% 47%;
     --meditation-foreground: 0 0% 100%;
 
-    /* Focus/timer colors */
-    --focus: 15 70% 65%;
+    /* Focus/timer colors - warm orange */
+    --focus: 24 70% 60%;
     --focus-foreground: 0 0% 100%;
 
     /* System colors */
-    --destructive: 0 65% 60%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 180 15% 88%;
-    --input: 180 15% 90%;
-    --ring: 140 40% 55%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 142 76% 36%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Gradients for zen aesthetics */
-    --gradient-zen: linear-gradient(135deg, hsl(140 40% 55%), hsl(200 35% 65%));
-    --gradient-calm: linear-gradient(180deg, hsl(180 25% 96%), hsl(200 30% 92%));
-    --gradient-focus: linear-gradient(135deg, hsl(15 70% 65%), hsl(25 65% 70%));
-    --gradient-meditation: linear-gradient(135deg, hsl(260 35% 65%), hsl(280 30% 75%));
+    /* Clean gradients */
+    --gradient-zen: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 60% 50%));
+    --gradient-calm: linear-gradient(180deg, hsl(0 0% 98%), hsl(0 0% 96%));
+    --gradient-focus: linear-gradient(135deg, hsl(24 70% 60%), hsl(30 70% 65%));
+    --gradient-meditation: linear-gradient(135deg, hsl(262 52% 47%), hsl(270 50% 55%));
     
-    /* Shadows for depth */
-    --shadow-soft: 0 4px 20px -4px hsl(140 40% 55% / 0.15);
-    --shadow-focus: 0 8px 25px -5px hsl(15 70% 65% / 0.2);
-    --shadow-meditation: 0 6px 20px -3px hsl(260 35% 65% / 0.18);
+    /* Subtle shadows */
+    --shadow-soft: 0 2px 8px 0 hsl(0 0% 0% / 0.05);
+    --shadow-focus: 0 4px 12px 0 hsl(24 70% 60% / 0.15);
+    --shadow-meditation: 0 4px 12px 0 hsl(262 52% 47% / 0.15);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-gentle: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 142 76% 36%;
   }
 
   .dark {
@@ -150,6 +143,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(220 14% 96%) !important;
+    color: hsl(222 84% 5%) !important;
   }
 }
