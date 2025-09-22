@@ -13,14 +13,19 @@ const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignI
   ];
 
   return (
-    <motion.nav 
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+    <div className="glass-navbar-container">
+      <motion.nav 
+        className="glass-navbar px-4 py-3"
+        style={{ 
+          width: 'fit-content',
+          minWidth: '800px',
+          maxWidth: '90vw'
+        }}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+      <div className="flex items-center justify-between w-full">
           <motion.div 
             className="flex items-center space-x-2"
             initial={{ opacity: 0, x: -20 }}
@@ -35,7 +40,7 @@ const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignI
             </h1>
           </motion.div>
 
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item, index) => (
               <motion.div
                 key={item.id}
@@ -86,8 +91,8 @@ const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignI
             </Button>
           </motion.div>
         </div>
-      </div>
-    </motion.nav>
+      </motion.nav>
+    </div>
   );
 };
 

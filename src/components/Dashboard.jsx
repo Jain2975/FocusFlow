@@ -46,9 +46,9 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-primary/20 via-transparent to-meditation/20" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Glassmorphic Background */}
+      <div className="absolute inset-0 glass-background" />
 
       <div className="relative z-10 pt-24 pb-12 px-6">
         <div className="container mx-auto max-w-6xl">
@@ -83,7 +83,7 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 * index }}
               >
-                <Card className="p-6 text-center hover:shadow-soft transition-all duration-300 border-border/50 bg-card/80 backdrop-blur-sm">
+                <Card className="glass-stats p-6 text-center">
                   <stat.icon className="w-8 h-8 mx-auto mb-3 text-primary" />
                   <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
@@ -108,7 +108,7 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
                 whileHover={{ y: -5 }}
                 className="group"
               >
-                <Card className="p-6 h-full cursor-pointer transition-all duration-300 hover:shadow-soft border-border/50 bg-card/80 backdrop-blur-sm group-hover:bg-card/90">
+                <Card className="glass-card p-6 h-full cursor-pointer">
                   <div className="text-center">
                     <div className={`w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br ${action.gradient} flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300`}>
                       <action.icon className="w-8 h-8 text-white" />
@@ -138,7 +138,7 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 }}
             >
-              <Card className="p-6 bg-gradient-zen/10 border-primary/20 backdrop-blur-sm">
+              <Card className="glass-card p-6">
                 <h3 className="text-lg font-semibold mb-2 text-foreground">
                   Unlock Your Full Potential
                 </h3>
