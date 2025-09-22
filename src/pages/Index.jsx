@@ -61,7 +61,11 @@ const Index = () => {
       case "todos":
         return <TodoList isGuestMode={!isAuthenticated} />;
       case "journal":
-        return <Journal isGuestMode={!isAuthenticated} />;
+        return <Journal 
+          isGuestMode={!isAuthenticated} 
+          onSignIn={() => setAuthView('signin')}
+          onSignUp={() => setAuthView('signup')}
+        />;
       case "analytics":
         return <Analytics isGuestMode={!isAuthenticated} />;
       case "meditation":

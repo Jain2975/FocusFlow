@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { BookOpen, Save, Calendar, Sparkles, Lock } from "lucide-react";
 
-const Journal = ({ isGuestMode }) => {
+const Journal = ({ isGuestMode, onSignIn, onSignUp }) => {
   const [entry, setEntry] = useState("");
   const [title, setTitle] = useState("");
   const [mood, setMood] = useState("");
@@ -87,10 +87,10 @@ const Journal = ({ isGuestMode }) => {
               </div>
               
               <div className="space-y-3">
-                <Button variant="zen" size="lg" className="w-full">
+                <Button variant="zen" size="lg" className="w-full" onClick={onSignIn}>
                   Sign In to Start Journaling
                 </Button>
-                <Button variant="outline" size="lg" className="w-full">
+                <Button variant="outline" size="lg" className="w-full" onClick={onSignUp}>
                   Create Free Account
                 </Button>
               </div>

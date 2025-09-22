@@ -105,7 +105,18 @@ const TodoList = ({ isGuestMode }) => {
   const totalCount = todos.length;
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12 px-6">
+    <div className="min-h-screen w-full bg-white relative">
+      {/* Emerald Glow Background */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `
+            radial-gradient(125% 125% at 50% 90%, #ffffff 40%, #10b981 100%)
+          `,
+          backgroundSize: "100% 100%",
+        }}
+      />
+      <div className="relative z-10 pt-24 pb-12 px-6">
       <div className="container mx-auto max-w-4xl">
         <motion.div
           className="text-center mb-8"
@@ -123,10 +134,10 @@ const TodoList = ({ isGuestMode }) => {
           )}
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Add Todo Form */}
           <motion.div
-            className="lg:col-span-1"
+            className="lg:col-span-2"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -145,18 +156,28 @@ const TodoList = ({ isGuestMode }) => {
                 
                 <div>
                   <label className="text-sm text-muted-foreground mb-2 block">Priority</label>
-                  <div className="flex space-x-2">
-                    {(['low', 'medium', 'high']).map((priority) => (
-                      <Button
-                        key={priority}
-                        variant={newPriority === priority ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setNewPriority(priority)}
-                        className="flex-1"
-                      >
-                        {getPriorityIcon(priority)} {priority}
-                      </Button>
-                    ))}
+                  <div className="space-y-2">
+                    <div className="flex space-x-2">
+                      {(['low', 'medium']).map((priority) => (
+                        <Button
+                          key={priority}
+                          variant={newPriority === priority ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setNewPriority(priority)}
+                          className="flex-1"
+                        >
+                          {getPriorityIcon(priority)} {priority}
+                        </Button>
+                      ))}
+                    </div>
+                    <Button
+                      variant={newPriority === 'high' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setNewPriority('high')}
+                      className="w-full"
+                    >
+                      {getPriorityIcon('high')} high
+                    </Button>
                   </div>
                 </div>
                 
@@ -202,7 +223,7 @@ const TodoList = ({ isGuestMode }) => {
 
           {/* Todo List */}
           <motion.div
-            className="lg:col-span-2"
+            className="lg:col-span-3"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
@@ -288,6 +309,7 @@ const TodoList = ({ isGuestMode }) => {
             </Card>
           </motion.div>
         </div>
+      </div>
       </div>
     </div>
   );

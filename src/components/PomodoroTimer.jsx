@@ -109,7 +109,18 @@ const PomodoroTimer = ({ isGuestMode }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12 px-6">
+    <div className="min-h-screen w-full bg-white relative">
+      {/* Emerald Glow Background */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `
+            radial-gradient(125% 125% at 50% 90%, #ffffff 40%, #10b981 100%)
+          `,
+          backgroundSize: "100% 100%",
+        }}
+      />
+      <div className="relative z-10 pt-24 pb-12 px-6">
       <div className="container mx-auto max-w-4xl">
         <motion.div
           className="text-center mb-8"
@@ -289,6 +300,7 @@ const PomodoroTimer = ({ isGuestMode }) => {
             )}
           </motion.div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -46,9 +46,17 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Glassmorphic Background */}
-      <div className="absolute inset-0 glass-background" />
+    <div className="min-h-screen w-full bg-white relative">
+      {/* Emerald Glow Background */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `
+            radial-gradient(125% 125% at 50% 90%, #ffffff 40%, #10b981 100%)
+          `,
+          backgroundSize: "100% 100%",
+        }}
+      />
 
       <div className="relative z-10 pt-24 pb-12 px-6">
         <div className="container mx-auto max-w-6xl">
@@ -59,6 +67,9 @@ const Dashboard = ({ onSectionChange, isGuestMode }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-zen bg-clip-text text-transparent">
+              FocusFlow
+            </h1>
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-zen bg-clip-text text-transparent">
               Welcome to Your Mindful Space
             </h2>
