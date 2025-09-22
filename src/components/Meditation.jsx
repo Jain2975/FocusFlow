@@ -7,7 +7,7 @@ import { Play, Pause, Volume2, VolumeX, RotateCcw, Timer } from "lucide-react";
 
 const Meditation = ({ isGuestMode }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSound, setCurrentSound] = useState("silence");
+  const [currentSound, setCurrentSound] = useState("forest");
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
   const [sessionTime, setSessionTime] = useState(10); // minutes
@@ -34,28 +34,67 @@ const Meditation = ({ isGuestMode }) => {
     ocean: '/sounds/ocean.mp3'
   };
 
-  // Get background theme based on current sound
-  const getBackgroundTheme = () => {
+  // Get background styles based on current sound
+  const getBackgroundStyles = () => {
     switch (currentSound) {
       case 'rain':
         return {
-          gradient: 'from-blue-900/30 via-blue-800/20 to-indigo-900/30',
-          overlay: 'bg-blue-600/40'
-        };
-      case 'forest':
-        return {
-          gradient: 'from-green-900/30 via-green-800/20 to-emerald-900/30',
-          overlay: 'bg-green-600/40'
+          containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
+          backgroundElement: (
+            <div 
+              className="absolute inset-0 z-0 pointer-events-none" 
+              style={{
+                backgroundImage: `radial-gradient(circle at center, #93c5fd, transparent)`,
+              }} 
+            />
+          )
         };
       case 'ocean':
         return {
-          gradient: 'from-cyan-900/30 via-blue-800/20 to-teal-900/30',
-          overlay: 'bg-cyan-600/40'
+          containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
+          backgroundElement: (
+            <div 
+              className="absolute inset-0 z-0 pointer-events-none" 
+              style={{
+                backgroundImage: `radial-gradient(circle at center, #93c5fd, transparent)`,
+              }} 
+            />
+          )
+        };
+      case 'forest':
+        return {
+          containerClass: 'min-h-screen w-full bg-white relative',
+          backgroundElement: (
+            <div 
+              className="absolute inset-0 z-0 pointer-events-none" 
+              style={{
+                backgroundImage: `radial-gradient(circle at center, #10b981, transparent)`,
+              }} 
+            />
+          )
         };
       default: // silence
         return {
-          gradient: 'from-meditation/30 via-purple-900/20 to-indigo-900/30',
-          overlay: 'bg-gradient-meditation/60'
+          containerClass: 'min-h-screen w-full bg-[#f5f5dc] relative',
+          backgroundElement: (
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                backgroundImage: `
+                  linear-gradient(180deg, 
+                    rgba(245,245,220,1) 0%, 
+                    rgba(255,223,186,0.8) 25%, 
+                    rgba(255,182,193,0.6) 50%, 
+                    rgba(147,112,219,0.7) 75%, 
+                    rgba(72,61,139,0.9) 100%
+                  ),
+                  radial-gradient(circle at 30% 20%, rgba(255,255,224,0.4) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(72,61,139,0.6) 0%, transparent 70%),
+                  radial-gradient(circle at 50% 60%, rgba(147,112,219,0.3) 0%, transparent 60%)
+                `,
+              }}
+            />
+          )
         };
     }
   };
@@ -193,13 +232,12 @@ const Meditation = ({ isGuestMode }) => {
     setCurrentSound(soundId);
   };
 
-  const backgroundTheme = getBackgroundTheme();
+  const backgroundStyles = getBackgroundStyles();
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className={backgroundStyles.containerClass}>
       {/* Dynamic Background */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${backgroundTheme.gradient}`} />
-      <div className={`absolute inset-0 ${backgroundTheme.overlay} backdrop-blur-sm`} />
+      {backgroundStyles.backgroundElement}
 
       <div className="relative z-10 pt-24 pb-12 px-6">
         <div className="container mx-auto max-w-6xl">
