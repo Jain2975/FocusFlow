@@ -1,195 +1,97 @@
+
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Play, Pause, Volume2, VolumeX, RotateCcw, Timer } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, RotateCcw } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext"; // Add this
 
 const Meditation = ({ isGuestMode }) => {
+  const { token, isAuthenticated } = useAuth();
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSound, setCurrentSound] = useState("forest");
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
+  
   const [sessionTime, setSessionTime] = useState(10); // minutes
   const [timeLeft, setTimeLeft] = useState(10 * 60); // seconds
   const [isTimerActive, setIsTimerActive] = useState(false);
-  
+  const [sessionStartTime, setSessionStartTime] = useState(null);
+
   const breathingCircleRef = useRef(null);
   const intervalRef = useRef(null);
   const audioRef = useRef(null);
 
+  const durations = [5, 10, 15, 20, 30];
   const sounds = [
     { id: "forest", name: "Forest Sounds", emoji: "🌲", description: "Birds chirping with gentle wind" },
     { id: "rain", name: "Gentle Rain", emoji: "🌧️", description: "Soft rainfall on leaves" },
     { id: "ocean", name: "Ocean Waves", emoji: "🌊", description: "Rhythmic waves on shore" },
     { id: "silence", name: "Pure Silence", emoji: "🤫", description: "Complete quiet for focus" },
   ];
-
-  const durations = [5, 10, 15, 20, 30];
-
-  // Audio file paths
   const soundFiles = {
     forest: '/sounds/forest.mp3',
     rain: '/sounds/rain.mp3',
-    ocean: '/sounds/ocean.mp3'
+    ocean: '/sounds/ocean.mp3',
+    silence: null
   };
-
-  // Get background styles based on current sound
   const getBackgroundStyles = () => {
-    switch (currentSound) {
-      case 'rain':
-        return {
-          containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
-          backgroundElement: (
-            <div
-              className="absolute inset-0 z-0 pointer-events-none"
-              style={{
-                backgroundImage: `
-       radial-gradient(circle at center, #8249fc, transparent)        
-     `,
-              }}
-            />
-          )
-        };
-      case 'ocean':
-        return {
-          containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
-          backgroundElement: (
-            <div
-              className="absolute inset-0 z-0 pointer-events-none"
-              style={{
-                backgroundImage: `
-       radial-gradient(circle at center, #6366f1, transparent)
-     `,
-              }}
-            />
-          )
-        };
-      case 'forest':
-        return {
-          containerClass: 'min-h-screen w-full bg-white relative',
-          backgroundElement: (
-            <div 
-              className="absolute inset-0 z-0 pointer-events-none" 
-              style={{
-                backgroundImage: `radial-gradient(circle at center, #10b981, transparent)`,
-              }} 
-            />
-          )
-        };
-      default: // silence
-        return {
-          containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
-          backgroundElement: (
-            <div 
-   className="absolute inset-0 z-0 pointer-events-none" 
-   style={{
-     backgroundImage: `
-       radial-gradient(circle at center, #eab308, transparent)
-     `,
-   }} 
- />
-          )
-        };
-    }
-  };
-
-  // Sound management with HTML5 audio
-  useEffect(() => {
-    if (isPlaying && currentSound !== 'silence') {
-      const audio = new Audio(soundFiles[currentSound]);
-      audio.loop = true;
-      audio.volume = isMuted ? 0 : volume;
-      
-      audio.play().catch(error => {
-        console.log('Audio play failed:', error);
-      });
-      
-      audioRef.current = audio;
-    }
-    
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        audioRef.current = null;
-      }
-    };
-  }, [isPlaying, currentSound]);
-
-  // Update volume when volume or mute changes
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : volume;
-    }
-  }, [volume, isMuted]);
-
-  // Breathing animation effect
-  useEffect(() => {
-    if (isPlaying && breathingCircleRef.current) {
-      const tl = gsap.timeline({ repeat: -1 });
-      tl.to(breathingCircleRef.current, {
-        scale: 1.3,
-        duration: 4,
-        ease: "power2.inOut"
-      })
-      .to(breathingCircleRef.current, {
-        scale: 1,
-        duration: 4,
-        ease: "power2.inOut"
-      });
-      
-      return () => {
-        tl.kill();
+  switch (currentSound) {
+    case 'rain':
+      return {
+        containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
+        backgroundElement: (
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none" 
+            style={{ backgroundImage: `radial-gradient(circle at center, #93c5fd, transparent)` }} 
+          />
+        )
       };
-    }
-  }, [isPlaying]);
+    case 'ocean':
+      return {
+        containerClass: 'min-h-screen w-full bg-white relative overflow-hidden',
+        backgroundElement: (
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none" 
+            style={{ backgroundImage: `radial-gradient(circle at center, #93c5fd, transparent)` }} 
+          />
+        )
+      };
+    case 'forest':
+      return {
+        containerClass: 'min-h-screen w-full bg-white relative',
+        backgroundElement: (
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none" 
+            style={{ backgroundImage: `radial-gradient(circle at center, #10b981, transparent)` }} 
+          />
+        )
+      };
+    case 'silence':
+    default:
+      return {
+        containerClass: 'min-h-screen w-full bg-[#f5f5dc] relative',
+        backgroundElement: (
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              backgroundImage: `
+                linear-gradient(180deg, rgba(245,245,220,1) 0%, rgba(255,223,186,0.8) 25%, rgba(255,182,193,0.6) 50%, rgba(147,112,219,0.7) 75%, rgba(72,61,139,0.9) 100%)`,
+            }}
+          />
+        )
+      };
+  }
+};
 
-  // Timer functionality
-  useEffect(() => {
-    if (isTimerActive && timeLeft > 0) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft(time => {
-          if (time <= 1) {
-            handleSessionComplete();
-            return 0;
-          }
-          return time - 1;
-        });
-      }, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isTimerActive, timeLeft]);
-
-  const handleSessionComplete = () => {
-    setIsTimerActive(false);
-    setIsPlaying(false);
-    
-    // Celebration effect
-    if (breathingCircleRef.current) {
-      gsap.from(breathingCircleRef.current, {
-        scale: 1.5,
-        duration: 0.8,
-        ease: "elastic.out(1, 0.3)"
-      });
-    }
-    
-    alert("🧘‍♀️ Meditation session complete! Great job!");
-  };
-
+  // Start / Pause / Reset timer logic
   const startMeditation = () => {
     setIsPlaying(true);
     setIsTimerActive(true);
     setTimeLeft(sessionTime * 60);
+    setSessionStartTime(new Date());
   };
 
   const pauseMeditation = () => {
@@ -201,6 +103,7 @@ const Meditation = ({ isGuestMode }) => {
     setIsPlaying(false);
     setIsTimerActive(false);
     setTimeLeft(sessionTime * 60);
+    setSessionStartTime(null);
   };
 
   const formatTime = (seconds) => {
@@ -217,23 +120,116 @@ const Meditation = ({ isGuestMode }) => {
   };
 
   const handleSoundChange = (soundId) => {
-    // Stop current audio if playing
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
     }
-    
     setCurrentSound(soundId);
   };
 
+  // Audio playback
+  useEffect(() => {
+    if (isPlaying && currentSound !== 'silence') {
+      const audio = new Audio(soundFiles[currentSound]);
+      audio.loop = true;
+      audio.volume = isMuted ? 0 : volume;
+      audio.play().catch(console.log);
+      audioRef.current = audio;
+    }
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, [isPlaying, currentSound]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume;
+    }
+  }, [volume, isMuted]);
+
+  // Breathing animation
+  useEffect(() => {
+    if (isPlaying && breathingCircleRef.current) {
+      const tl = gsap.timeline({ repeat: -1 });
+      tl.to(breathingCircleRef.current, { scale: 1.3, duration: 4, ease: "power2.inOut" })
+        .to(breathingCircleRef.current, { scale: 1, duration: 4, ease: "power2.inOut" });
+      return () => tl.kill();
+    }
+  }, [isPlaying]);
+
+  // Timer countdown & backend save
+  useEffect(() => {
+    if (isTimerActive && timeLeft > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((time) => {
+          if (time <= 1) {
+            handleSessionComplete();
+            return 0;
+          }
+          return time - 1;
+        });
+      }, 1000);
+    } else {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isTimerActive, timeLeft]);
+
+  const handleSessionComplete = async () => {
+    setIsTimerActive(false);
+    setIsPlaying(false);
+
+    if (breathingCircleRef.current) {
+      gsap.from(breathingCircleRef.current, {
+        scale: 1.5,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.3)"
+      });
+    }
+
+    // Save session to backend if logged in
+    if (!isGuestMode && token && sessionStartTime) {
+      const endTime = new Date();
+      const durationMinutes = (endTime - sessionStartTime) / 60000;
+
+      try {
+        await fetch("http://localhost:3000/meditation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            startTime: sessionStartTime.toISOString(),
+            endTime: endTime.toISOString(),
+            duration: durationMinutes,
+            status: "completed",
+            type: currentSound
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to save meditation session:", err);
+      }
+    }
+
+    setSessionStartTime(null);
+    alert("🧘‍♀️ Meditation session complete! Great job!");
+  };
+
+  // Background styles (keep as-is)
+  
   const backgroundStyles = getBackgroundStyles();
 
   return (
     <div className={backgroundStyles.containerClass}>
-      {/* Dynamic Background */}
       {backgroundStyles.backgroundElement}
-
       <div className="relative z-10 pt-24 pb-12 px-6">
         <div className="container mx-auto max-w-6xl">
           <motion.div

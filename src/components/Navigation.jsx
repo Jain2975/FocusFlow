@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Clock, BookOpen, Brain, CheckSquare, User, Settings, BarChart3 } from "lucide-react";
+import {useAuth} from "@/contexts/AuthContext";
 
-const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignIn, onSignUp, onSignOut }) => {
+const Navigation = ({ activeSection, onSectionChange, isGuestMode, onSignIn, onSignUp, onSignOut }) => {
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: CheckSquare, variant: "calm" },
     { id: "pomodoro", label: "Focus Timer", icon: Clock, variant: "focus" },
@@ -11,7 +12,8 @@ const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignI
     { id: "meditation", label: "Meditation", icon: Brain, variant: "meditation" },
     { id: "analytics", label: "Analytics", icon: BarChart3, variant: "zen" },
   ];
-
+  
+  const {user}=useAuth();
   return (
     <div className="glass-navbar-container">
       <motion.nav 
@@ -79,7 +81,7 @@ const Navigation = ({ activeSection, onSectionChange, isGuestMode, user, onSignI
             ) : (
               <>
                 <span className="text-sm text-muted-foreground">
-                  Welcome, {user?.name || user?.email}
+                  Welcome, {user?.name || "User"}
                 </span>
                 <Button variant="ghost" size="sm" onClick={onSignOut}>
                   Sign Out

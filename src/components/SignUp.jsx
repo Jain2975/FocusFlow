@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Check } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
+const SignUp = ({ onBack, onSwitchToSignIn }) => {
+  const { signUp } = useAuth(); // Use AuthContext instead of onSignUp
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,75 +21,48 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ""
-      }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    }
-    
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
-    
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-    
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords don't match";
-    }
-    
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    else if (formData.name.trim().length < 2) newErrors.name = "Name must be at least 2 characters";
+
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email";
+
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters";
+
+    if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
+    else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords don't match";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Create new user
-      onSignUp({
-        id: Date.now(),
-        name: formData.name.trim(),
-        email: formData.email,
-        avatar: `https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face`,
-        joinedDate: new Date().toISOString().split('T')[0],
-        stats: {
-          totalSessions: 0,
-          totalMinutes: 0,
-          streak: 0,
-          achievements: 0
-        }
-      });
+    try {
+      // Call signUp from context
+      const result = await signUp(formData.name.trim(), formData.email, formData.password);
+      if (!result.success) {
+        setErrors({ api: result.message || "Signup failed" });
+      } else {
+        // After successful signup, switch to SignIn
+        onSwitchToSignIn();
+      }
+    } catch (err) {
+      console.error("Signup failed:", err);
+      setErrors({ api: "Signup failed, please try again." });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const passwordRequirements = [
@@ -130,11 +105,16 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                 </p>
               </div>
 
+              {errors.api && (
+                <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm p-3 rounded-lg mb-4">
+                  {errors.api}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Full Name
-                  </label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
@@ -146,15 +126,12 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                       className="pl-10"
                     />
                   </div>
-                  {errors.name && (
-                    <p className="text-destructive text-sm mt-1">{errors.name}</p>
-                  )}
+                  {errors.name && <p className="text-destructive text-sm mt-1">{errors.name}</p>}
                 </div>
 
+                {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Email Address
-                  </label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
@@ -166,15 +143,12 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                       className="pl-10"
                     />
                   </div>
-                  {errors.email && (
-                    <p className="text-destructive text-sm mt-1">{errors.email}</p>
-                  )}
+                  {errors.email && <p className="text-destructive text-sm mt-1">{errors.email}</p>}
                 </div>
 
+                {/* Password */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Password
-                  </label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Password</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
@@ -193,15 +167,12 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                  {errors.password && (
-                    <p className="text-destructive text-sm mt-1">{errors.password}</p>
-                  )}
+                  {errors.password && <p className="text-destructive text-sm mt-1">{errors.password}</p>}
                 </div>
 
+                {/* Confirm Password */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Confirm Password
-                  </label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Confirm Password</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                     <Input
@@ -220,9 +191,7 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                  {errors.confirmPassword && (
-                    <p className="text-destructive text-sm mt-1">{errors.confirmPassword}</p>
-                  )}
+                  {errors.confirmPassword && <p className="text-destructive text-sm mt-1">{errors.confirmPassword}</p>}
                 </div>
 
                 {/* Password Requirements */}
@@ -231,12 +200,14 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                     <p className="text-sm font-medium text-foreground">Password Requirements:</p>
                     {passwordRequirements.map((req, index) => (
                       <div key={index} className="flex items-center space-x-2">
-                        <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
-                          req.met ? 'bg-primary text-white' : 'bg-muted'
-                        }`}>
+                        <div
+                          className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                            req.met ? "bg-primary text-white" : "bg-muted"
+                          }`}
+                        >
                           {req.met && <Check className="w-3 h-3" />}
                         </div>
-                        <span className={`text-sm ${req.met ? 'text-primary' : 'text-muted-foreground'}`}>
+                        <span className={`text-sm ${req.met ? "text-primary" : "text-muted-foreground"}`}>
                           {req.text}
                         </span>
                       </div>
@@ -244,12 +215,7 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
                   </div>
                 )}
 
-                <Button
-                  type="submit"
-                  variant="zen"
-                  className="w-full"
-                  disabled={isLoading}
-                >
+                <Button type="submit" variant="zen" className="w-full" disabled={isLoading}>
                   {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               </form>
@@ -257,30 +223,10 @@ const SignUp = ({ onBack, onSignUp, onSwitchToSignIn }) => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <button
-                    onClick={onSwitchToSignIn}
-                    className="text-primary hover:underline font-medium"
-                  >
+                  <button onClick={onSwitchToSignIn} className="text-primary hover:underline font-medium">
                     Sign in
                   </button>
                 </p>
-              </div>
-
-              <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-primary text-xs">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-foreground mb-1">What you'll get:</h3>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li>• Track your focus sessions and meditation progress</li>
-                      <li>• Sync across all your devices</li>
-                      <li>• Personalized insights and achievements</li>
-                      <li>• Access to premium guided meditations</li>
-                    </ul>
-                  </div>
-                </div>
               </div>
             </Card>
           </motion.div>
