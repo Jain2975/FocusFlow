@@ -3,10 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose, { mongo } from "mongoose";
 import cors from "cors";
-import { type } from "os";
-import { error } from "console";
 import bcrypt from "bcrypt";
-import { parseCSSVariable } from "framer-motion";
 import jwt from "jsonwebtoken";
 dotenv.config();
 
@@ -277,39 +274,48 @@ app.post("/journal", authenticateJWT, async (req, res) => {
   }
 });
 
+// Update a Journal Entry
+app.patch("/journal/:id", authenticateJWT, async (req, res) => {
+  const { title, content, mood } = req.body;
 
-// // Get focus session analytics
-// app.get("/analytics/focus-sessions", authenticateJWT, async (req, res) => {
-//   try {
-//     const sessions = await Pomodoro.find({ userId: req.user.userID });
-//     res.status(200).json({ sessions });
-//   } catch (err) {
-//     console.error("Error fetching focus sessions:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+  try {
+    // Only update fields that are provided
+    const updatedJournal = await Journal.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.userID },
+      { $set: { title, content, mood } },
+      { new: true } // returns the updated document
+    );
 
-// // Get meditation analytics
-// app.get("/analytics/meditation", authenticateJWT, async (req, res) => {
-//   try {
-//     const meditation = await Meditation.find({ userId: req.user.userID });
-//     res.status(200).json({ meditation });
-//   } catch (err) {
-//     console.error("Error fetching meditation data:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+    if (!updatedJournal)
+      return res.status(404).json({ message: "Journal entry not found or unauthorized" });
 
-// // Get task analytics
-// app.get("/analytics/tasks", authenticateJWT, async (req, res) => {
-//   try {
-//     const tasks = await Task.find({ userId: req.user.userID });
-//     res.status(200).json({ tasks });
-//   } catch (err) {
-//     console.error("Error fetching tasks:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+    res.status(200).json({
+      message: "Journal entry updated successfully",
+      entry: updatedJournal,
+    });
+  } catch (err) {
+    console.error("Error updating journal entry:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Delete a Journal Entry
+app.delete("/journal/:id", authenticateJWT, async (req, res) => {
+  try {
+    const deletedJournal = await Journal.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user.userID,
+    });
+
+    if (!deletedJournal)
+      return res.status(404).json({ message: "Journal entry not found or unauthorized" });
+
+    res.status(200).json({ message: "Journal entry deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting journal entry:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // Weekly Trends (example using Pomodoro + Meditation)
 app.get("/analytics/weekly-trends", authenticateJWT, async (req, res) => {
