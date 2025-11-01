@@ -369,19 +369,7 @@ app.get("/analytics/productivity-distribution", authenticateJWT, async (req, res
 });
 
 // Daily Mood (from Journal)
-// app.get("/analytics/daily-mood", authenticateJWT, async (req, res) => {
-//   try {
-//     const journals = await Journal.find({ userId: req.user.userID });
-//     const data = journals.map(j => ({
-//       day: j.date.toISOString().slice(0, 10),
-//       mood: ["sad", "neutral", "stressed", "happy"].indexOf(j.mood) + 1,
-//       energy: 5 // placeholder
-//     }));
-//     res.status(200).json(data);
-//   } catch (err) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+
 app.get("/analytics/daily-mood", authenticateJWT, async (req, res) => {
   try {
     const journals = await Journal.find({ userId: req.user.userID });
@@ -399,7 +387,7 @@ app.get("/analytics/daily-mood", authenticateJWT, async (req, res) => {
 
     const data = journals.map(j => ({
       day: j.date.toISOString().slice(0, 10),
-      mood: moodScoreMap[j.mood.toLowerCase()] || 0, // fallback if not found
+      mood: moodScoreMap[j.mood.toLowerCase()] || 0, 
       
     }));
 
