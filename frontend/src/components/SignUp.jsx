@@ -7,7 +7,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const SignUp = ({ onBack, onSwitchToSignIn }) => {
-  const { signUp } = useAuth(); // Use AuthContext instead of onSignUp
+  const { signUp } = useAuth(); 
   const [formData, setFormData] = useState({
     name: "",
     email: "",

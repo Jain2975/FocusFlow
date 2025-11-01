@@ -46,7 +46,21 @@ const journalSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   title: String,
   content: String,
-  mood: { type: String, enum: ["happy", "sad", "neutral", "stressed"], default: "neutral" },
+  mood: {
+  type: String,
+  enum: [
+    "happy",
+    "peaceful",
+    "thoughtful",
+    "tired",
+    "frustrated",
+    "excited",
+    "sad",
+    "motivated"
+  ],
+  required: true
+},
+
   date: { type: Date, default: Date.now }
 }, { timestamps: true });
 
@@ -279,11 +293,11 @@ app.patch("/journal/:id", authenticateJWT, async (req, res) => {
   const { title, content, mood } = req.body;
 
   try {
-    // Only update fields that are provided
+    
     const updatedJournal = await Journal.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.userID },
       { $set: { title, content, mood } },
-      { new: true } // returns the updated document
+      { new: true } 
     );
 
     if (!updatedJournal)
@@ -355,33 +369,60 @@ app.get("/analytics/productivity-distribution", authenticateJWT, async (req, res
 });
 
 // Daily Mood (from Journal)
+// app.get("/analytics/daily-mood", authenticateJWT, async (req, res) => {
+//   try {
+//     const journals = await Journal.find({ userId: req.user.userID });
+//     const data = journals.map(j => ({
+//       day: j.date.toISOString().slice(0, 10),
+//       mood: ["sad", "neutral", "stressed", "happy"].indexOf(j.mood) + 1,
+//       energy: 5 // placeholder
+//     }));
+//     res.status(200).json(data);
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 app.get("/analytics/daily-mood", authenticateJWT, async (req, res) => {
   try {
     const journals = await Journal.find({ userId: req.user.userID });
+
+    const moodScoreMap = {
+      sad: 1,
+      frustrated: 2,
+      tired: 3,
+      thoughtful: 4,
+      peaceful: 5,
+      motivated: 6,
+      excited: 7,
+      happy: 8
+    };
+
     const data = journals.map(j => ({
       day: j.date.toISOString().slice(0, 10),
-      mood: ["sad", "neutral", "stressed", "happy"].indexOf(j.mood) + 1,
-      energy: 5 // placeholder
+      mood: moodScoreMap[j.mood.toLowerCase()] || 0, // fallback if not found
+      
     }));
+
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
 
+
 app.get("/analytics/stats", authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.userID;
 
-    // Total Focus Time (assuming Pomodoro schema has `duration` in minutes)
+    // Total Focus Time 
     const pomodoros = await Pomodoro.find({ userId });
     const totalFocusMinutes = pomodoros.reduce((sum, p) => sum + (p.duration || 0), 0);
     const totalFocusHours = (totalFocusMinutes / 60).toFixed(1);
 
-    // Completed Sessions (count pomodoros)
+    // Completed Sessions of pomodoro
     const completedSessions = pomodoros.length;
 
-    // Meditation Minutes (assuming Meditation schema has `duration` in minutes)
+    // Meditation 
     const meditations = await Meditation.find({ userId });
     const meditationMinutes = meditations.reduce((sum, m) => sum + (m.duration || 0), 0);
 
@@ -409,7 +450,7 @@ app.get("/analytics/achievements", authenticateJWT, async (req, res) => {
 
     let achievements = [];
 
-    // Example dynamic rules
+    
     if (pomodoroCount >= 50) {
       achievements.push({
         title: "Focus Master",
@@ -436,8 +477,7 @@ app.get("/analytics/achievements", authenticateJWT, async (req, res) => {
         date: "Recently"
       });
     }
-
-    // Example: early bird (if sessions before 9 AM exist)
+    
     const earlySessions = await Pomodoro.find({
       userId,
       startTime: { $exists: true, $ne: null }

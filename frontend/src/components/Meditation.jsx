@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, Pause, Volume2, VolumeX, RotateCcw } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext"; // Add this
+import { useAuth } from "@/contexts/AuthContext";
 
 const Meditation = ({ isGuestMode }) => {
   const { token, isAuthenticated } = useAuth();
@@ -223,8 +223,7 @@ const Meditation = ({ isGuestMode }) => {
     alert("🧘‍♀️ Meditation session complete! Great job!");
   };
 
-  // Background styles (keep as-is)
-  
+  // Background styles   
   const backgroundStyles = getBackgroundStyles();
 
   return (

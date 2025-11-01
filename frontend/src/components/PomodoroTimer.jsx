@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, Pause, RotateCcw, Settings, Coffee, Brain } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext"; // Make sure this points to your AuthContext
+import { useAuth } from "@/contexts/AuthContext"; 
 
 const PomodoroTimer = ({ isGuestMode }) => {
   const { token, user, isAuthenticated } = useAuth();
@@ -81,7 +81,7 @@ const PomodoroTimer = ({ isGuestMode }) => {
       const newCount = sessionsCompleted + 1;
       setSessionsCompleted(newCount);
 
-      // Save cycle to backend if user is authenticated
+      
       if (!isGuestMode && token && sessionStartTime) {
   const endTime = new Date();
   const durationMinutes = (endTime - sessionStartTime) / 60000;

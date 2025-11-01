@@ -27,7 +27,7 @@ const Journal = ({ isGuestMode, onSignIn, onSignUp }) => {
     { emoji: "💪", label: "Motivated" }
   ];
 
-  // Load existing entries
+  
   useEffect(() => {
     if (isGuestMode) {
       const savedEntries = localStorage.getItem("focusflow-journal");
@@ -39,16 +39,14 @@ const Journal = ({ isGuestMode, onSignIn, onSignUp }) => {
     }
   }, [isGuestMode]);
 
-  // Sync guest entries to localStorage
+  
   useEffect(() => {
     if (isGuestMode) {
       localStorage.setItem("focusflow-journal", JSON.stringify(entries));
     }
   }, [entries, isGuestMode]);
 
-  // -----------------
-  // Backend functions
-  // -----------------
+  
   const fetchEntries = async () => {
     try {
       const res = await fetch("http://localhost:3000/journal", {
@@ -88,48 +86,6 @@ const handleDelete = async (id) => {
   }
 };
 
-  // const handleSave = async () => {
-  //   if (!title.trim() && !entry.trim()) return;
-
-  //   if (isGuestMode) {
-  //     const newEntry = {
-  //       id: Date.now().toString(),
-  //       title,
-  //       content: entry,
-  //       mood,
-  //       date: new Date(),
-  //     };
-  //     setEntries(prev => [newEntry, ...prev]);
-  //     setTitle("");
-  //     setEntry("");
-  //     setMood("");
-  //     alert("Journal entry saved locally!");
-  //   } else {
-  //     try {
-  //       const res = await fetch("http://localhost:3000/journal", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify({ title, content: entry, mood }),
-  //       });
-  //       const data = await res.json();
-  //       if (!res.ok) throw new Error(data.error || "Failed to save entry");
-
-  //       // Refresh list from backend
-  //       fetchEntries();
-
-  //       setTitle("");
-  //       setEntry("");
-  //       setMood("");
-  //       alert("Journal entry saved!");
-  //     } catch (err) {
-  //       console.error("Error saving journal entry:", err);
-  //       alert("Failed to save entry. See console.");
-  //     }
-  //   }
-  // };
   const handleSave = async () => {
   if (!title.trim() && !entry.trim()) return;
 
@@ -181,9 +137,7 @@ const handleDelete = async (id) => {
     setEntry(prev => prev + (prev ? "\n\n" : "") + prompt + "\n");
   };
 
-  // -----------------
-  // Guest mode lock screen
-  // -----------------
+ //Guest
   if (isGuestMode) {
     return (
       <div className="min-h-screen bg-background pt-24 pb-12 px-6">
@@ -206,9 +160,6 @@ const handleDelete = async (id) => {
     );
   }
 
-  // -----------------
-  // Authenticated journal UI
-  // -----------------
   return (
     <div className="min-h-screen bg-background pt-24 pb-12 px-6">
       <div className="container mx-auto max-w-4xl">
@@ -229,7 +180,7 @@ const handleDelete = async (id) => {
             {moods.map(m => (
               <Button
                 key={m.label}
-                variant={mood === m.label ? 'default' : 'outline'}
+                variant={mood === m.label.toLowerCase() ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setMood(m.label.toLowerCase())}
               >
