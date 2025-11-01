@@ -3,10 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose, { mongo } from "mongoose";
 import cors from "cors";
-import { type } from "os";
-import { error } from "console";
 import bcrypt from "bcrypt";
-import { parseCSSVariable } from "framer-motion";
 import jwt from "jsonwebtoken";
 dotenv.config();
 
@@ -49,7 +46,21 @@ const journalSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   title: String,
   content: String,
-  mood: { type: String, enum: ["happy", "sad", "neutral", "stressed"], default: "neutral" },
+  mood: {
+  type: String,
+  enum: [
+    "happy",
+    "peaceful",
+    "thoughtful",
+    "tired",
+    "frustrated",
+    "excited",
+    "sad",
+    "motivated"
+  ],
+  required: true
+},
+
   date: { type: Date, default: Date.now }
 }, { timestamps: true });
 
@@ -277,39 +288,48 @@ app.post("/journal", authenticateJWT, async (req, res) => {
   }
 });
 
+// Update a Journal Entry
+app.patch("/journal/:id", authenticateJWT, async (req, res) => {
+  const { title, content, mood } = req.body;
 
-// // Get focus session analytics
-// app.get("/analytics/focus-sessions", authenticateJWT, async (req, res) => {
-//   try {
-//     const sessions = await Pomodoro.find({ userId: req.user.userID });
-//     res.status(200).json({ sessions });
-//   } catch (err) {
-//     console.error("Error fetching focus sessions:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+  try {
+    
+    const updatedJournal = await Journal.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.userID },
+      { $set: { title, content, mood } },
+      { new: true } 
+    );
 
-// // Get meditation analytics
-// app.get("/analytics/meditation", authenticateJWT, async (req, res) => {
-//   try {
-//     const meditation = await Meditation.find({ userId: req.user.userID });
-//     res.status(200).json({ meditation });
-//   } catch (err) {
-//     console.error("Error fetching meditation data:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+    if (!updatedJournal)
+      return res.status(404).json({ message: "Journal entry not found or unauthorized" });
 
-// // Get task analytics
-// app.get("/analytics/tasks", authenticateJWT, async (req, res) => {
-//   try {
-//     const tasks = await Task.find({ userId: req.user.userID });
-//     res.status(200).json({ tasks });
-//   } catch (err) {
-//     console.error("Error fetching tasks:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+    res.status(200).json({
+      message: "Journal entry updated successfully",
+      entry: updatedJournal,
+    });
+  } catch (err) {
+    console.error("Error updating journal entry:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Delete a Journal Entry
+app.delete("/journal/:id", authenticateJWT, async (req, res) => {
+  try {
+    const deletedJournal = await Journal.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user.userID,
+    });
+
+    if (!deletedJournal)
+      return res.status(404).json({ message: "Journal entry not found or unauthorized" });
+
+    res.status(200).json({ message: "Journal entry deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting journal entry:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // Weekly Trends (example using Pomodoro + Meditation)
 app.get("/analytics/weekly-trends", authenticateJWT, async (req, res) => {
@@ -349,33 +369,48 @@ app.get("/analytics/productivity-distribution", authenticateJWT, async (req, res
 });
 
 // Daily Mood (from Journal)
+
 app.get("/analytics/daily-mood", authenticateJWT, async (req, res) => {
   try {
     const journals = await Journal.find({ userId: req.user.userID });
+
+    const moodScoreMap = {
+      sad: 1,
+      frustrated: 2,
+      tired: 3,
+      thoughtful: 4,
+      peaceful: 5,
+      motivated: 6,
+      excited: 7,
+      happy: 8
+    };
+
     const data = journals.map(j => ({
       day: j.date.toISOString().slice(0, 10),
-      mood: ["sad", "neutral", "stressed", "happy"].indexOf(j.mood) + 1,
-      energy: 5 // placeholder
+      mood: moodScoreMap[j.mood.toLowerCase()] || 0, 
+      
     }));
+
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
 
+
 app.get("/analytics/stats", authenticateJWT, async (req, res) => {
   try {
     const userId = req.user.userID;
 
-    // Total Focus Time (assuming Pomodoro schema has `duration` in minutes)
+    // Total Focus Time 
     const pomodoros = await Pomodoro.find({ userId });
     const totalFocusMinutes = pomodoros.reduce((sum, p) => sum + (p.duration || 0), 0);
     const totalFocusHours = (totalFocusMinutes / 60).toFixed(1);
 
-    // Completed Sessions (count pomodoros)
+    // Completed Sessions of pomodoro
     const completedSessions = pomodoros.length;
 
-    // Meditation Minutes (assuming Meditation schema has `duration` in minutes)
+    // Meditation 
     const meditations = await Meditation.find({ userId });
     const meditationMinutes = meditations.reduce((sum, m) => sum + (m.duration || 0), 0);
 
@@ -403,7 +438,7 @@ app.get("/analytics/achievements", authenticateJWT, async (req, res) => {
 
     let achievements = [];
 
-    // Example dynamic rules
+    
     if (pomodoroCount >= 50) {
       achievements.push({
         title: "Focus Master",
@@ -430,8 +465,7 @@ app.get("/analytics/achievements", authenticateJWT, async (req, res) => {
         date: "Recently"
       });
     }
-
-    // Example: early bird (if sessions before 9 AM exist)
+    
     const earlySessions = await Pomodoro.find({
       userId,
       startTime: { $exists: true, $ne: null }
