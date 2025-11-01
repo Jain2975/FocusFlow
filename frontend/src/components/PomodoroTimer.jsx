@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, Pause, RotateCcw, Settings, Coffee, Brain } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext"; 
+import { useAuth,BASE_URL } from "@/contexts/AuthContext"; 
 
 const PomodoroTimer = ({ isGuestMode }) => {
   const { token, user, isAuthenticated } = useAuth();
@@ -87,7 +87,7 @@ const PomodoroTimer = ({ isGuestMode }) => {
   const durationMinutes = (endTime - sessionStartTime) / 60000;
 
   try {
-    await fetch("http://localhost:3000/pomodoro", {
+    await fetch(`${BASE_URL}/pomodoro`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

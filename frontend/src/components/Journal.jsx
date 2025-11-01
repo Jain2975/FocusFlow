@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { BookOpen, Save, Calendar, Sparkles, Lock } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth,BASE_URL} from "@/contexts/AuthContext";
 
 const Journal = ({ isGuestMode, onSignIn, onSignUp }) => {
   const { token } = useAuth();
@@ -49,7 +49,7 @@ const Journal = ({ isGuestMode, onSignIn, onSignUp }) => {
   
   const fetchEntries = async () => {
     try {
-      const res = await fetch("http://localhost:3000/journal", {
+      const res = await fetch(`${BASE_URL}/journal`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch journal entries");
@@ -74,7 +74,7 @@ const handleDelete = async (id) => {
     if (isGuestMode) {
       setEntries(prev => prev.filter(e => e.id !== id));
     } else {
-      const res = await fetch(`http://localhost:3000/journal/${id}`, {
+      const res = await fetch(`${BASE_URL}/journal/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -106,8 +106,8 @@ const handleDelete = async (id) => {
       }
     } else {
       const url = editingId
-        ? `http://localhost:3000/journal/${editingId}`
-        : `http://localhost:3000/journal`;
+        ? `${BASE_URL}/journal/${editingId}`
+        : `${BASE_URL}/journal`;
       const method = editingId ? "PATCH" : "POST";
 
       const res = await fetch(url, {

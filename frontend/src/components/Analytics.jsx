@@ -11,7 +11,7 @@ import {
   Calendar, Clock, Target, TrendingUp, Award, Brain, Lock,
   ChevronDown, Filter, BarChart3
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth,BASE_URL} from "@/contexts/AuthContext";
 
 const Analytics = ({ isGuestMode }) => {
   const {token}=useAuth();
@@ -33,7 +33,7 @@ const Analytics = ({ isGuestMode }) => {
 
     const headers = { Authorization: `Bearer ${token}` };
 
-    const fetchWeeklyTrends = fetch("http://localhost:3000/analytics/weekly-trends", { headers })
+    const fetchWeeklyTrends = fetch(`${BASE_URL}/analytics/weekly-trends`, { headers })
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch weekly trends");
         return res.json();
@@ -41,7 +41,7 @@ const Analytics = ({ isGuestMode }) => {
       .then(data => setWeeklyTrends(data))
       .catch(err => console.error(err));
 
-    const fetchProductivityDistribution = fetch("http://localhost:3000/analytics/productivity-distribution", { headers })
+    const fetchProductivityDistribution = fetch(`${BASE_URL}/analytics/productivity-distribution`, { headers })
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch productivity distribution");
         return res.json();
@@ -49,7 +49,7 @@ const Analytics = ({ isGuestMode }) => {
       .then(data => setProductivityDistribution(data))
       .catch(err => console.error(err));
 
-    const fetchDailyMood = fetch("http://localhost:3000/analytics/daily-mood", { headers })
+    const fetchDailyMood = fetch(`${BASE_URL}/analytics/daily-mood`, { headers })
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch daily mood");
         return res.json();
@@ -60,7 +60,7 @@ const Analytics = ({ isGuestMode }) => {
     Promise.all([fetchWeeklyTrends, fetchProductivityDistribution, fetchDailyMood])
       .finally(() => setLoading(false));
 
-    const fetchStats = fetch("http://localhost:3000/analytics/stats", { headers })
+    const fetchStats = fetch(`${BASE_URL}/analytics/stats`, { headers })
   .then(res => {
     if (!res.ok) throw new Error("Failed to fetch stats");
     return res.json();
@@ -71,7 +71,7 @@ const Analytics = ({ isGuestMode }) => {
 Promise.all([fetchWeeklyTrends, fetchProductivityDistribution, fetchDailyMood, fetchStats])
   .finally(() => setLoading(false));
 
-  const fetchAchievements = fetch("http://localhost:3000/analytics/achievements", { headers })
+  const fetchAchievements = fetch(`${BASE_URL}/analytics/achievements`, { headers })
   .then(res => {
     if (!res.ok) throw new Error("Failed to fetch achievements");
     return res.json();
