@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Calendar, Trash2 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth,BASE_URL } from "@/contexts/AuthContext";
 
 const TodoList = ({ isGuestMode }) => {
   const { token } = useAuth();
@@ -46,7 +46,7 @@ const TodoList = ({ isGuestMode }) => {
   
   const fetchTodos = async () => {
     try {
-      const res = await fetch("http://localhost:3000/task", {
+      const res = await fetch(`${BASE_URL}/task`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch tasks");
@@ -74,7 +74,7 @@ const TodoList = ({ isGuestMode }) => {
       setTodos((prev) => [todo, ...prev]);
     } else {
       try {
-        const res = await fetch("http://localhost:3000/task", {
+        const res = await fetch(`${BASE_URL}/task`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -109,7 +109,7 @@ const TodoList = ({ isGuestMode }) => {
       );
     } else {
       try {
-        const res = await fetch(`http://localhost:3000/task/${id}`, {
+        const res = await fetch(`${BASE_URL}/task/${id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ const TodoList = ({ isGuestMode }) => {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   } else {
     try {
-      const res = await fetch(`http://localhost:3000/task/${id}`, {
+      const res = await fetch(`${BASE_URL}/task/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

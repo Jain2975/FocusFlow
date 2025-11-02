@@ -9,7 +9,11 @@ dotenv.config();
 
 const port=3000;
 const app=express();
-app.use(cors());
+app.use(cors({
+  origin:process.env.VITE_API_BASE,
+  methods:["GET","POST","PATCH","DELETE"],
+  credentials:true
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 

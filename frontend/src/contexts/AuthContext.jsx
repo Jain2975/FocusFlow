@@ -1,7 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import {jwtDecode} from "jwt-decode"; // npm install jwt-decode
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
+
+const API_URL = import.meta.env.VITE_API_URL;
+export const BASE_URL = API_URL;
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -10,20 +13,20 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // decoded user info from JWT
-  const [token, setToken] = useState(null); // JWT token
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ On mount, check localStorage for token
+  
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       try {
         const decoded = jwtDecode(savedToken);
         const currentTime = Date.now() / 1000;
+
         if (decoded.exp && decoded.exp < currentTime) {
-          // Token expired
-          localStorage.removeItem("token");
+          localStorage.removeItem("token"); // expired token
         } else {
           setToken(savedToken);
           setUser({
@@ -41,8 +44,9 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (email, password) => {
     setIsLoading(true);
+
     try {
-      const res = await fetch("http://localhost:3000/signin", {
+      const res = await fetch(`${API_URL}/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -51,11 +55,9 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Sign in failed");
 
-      // Store JWT in memory and localStorage
-      setToken(data.token);
       localStorage.setItem("token", data.token);
+      setToken(data.token);
 
-      // Decode user info from JWT
       const decoded = jwtDecode(data.token);
       setUser({
         id: decoded.userID,
@@ -74,14 +76,15 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (name, email, password) => {
     try {
-      const res = await fetch("http://localhost:3000/signup", {
+      const res = await fetch(`${API_URL}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
+
       const data = await res.json();
-      if (!res.ok)
-        return { success: false, message: data.error || "Signup failed" };
+      if (!res.ok) return { success: false, message: data.error || "Signup failed" };
+
       return { success: true };
     } catch (err) {
       console.error(err);
