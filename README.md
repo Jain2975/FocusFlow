@@ -6,9 +6,11 @@ FocusFlow is a clean and intuitive productivity web app designed to help you sta
 ## Features
 
 -  Add, edit, and delete tasks  
--  Focus timer (Pomodoro style)  
+-  Focus timer (Pomodoro style)
+-  Meditation Sessions (With Various Themes)
 -  Productivity analytics/report  
--  User accounts & login system  
+-  User accounts & login system
+-  Maintain Journals 
 -  Responsive design — works on all screens  
 
 
@@ -19,7 +21,7 @@ FocusFlow is a clean and intuitive productivity web app designed to help you sta
 | React / Vite | Node.js / Express | MongoDB |
 
 
-## 🚧 Installation & Setup
+##  Installation & Setup
 
 ### git clone https://github.com/yourusername/focusflow.git
 ### cd focusflow
